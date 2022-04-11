@@ -265,13 +265,13 @@ universalCanBe filtered maximalUtrump var dom = [f | f <- filtered, and [(f ++ v
 -- Existential Trump
 existentialTrump :: Var -> Env -> Inds -> Domain -> Trumps -> Trumps -- this will return the maximal trumps
 existentialTrump var env inds dom maxUtrumps | maxUtrumps == [[]] = [[]]
-                                        | otherwise =  toList $ fromList $ reduceSubTrumps $ concat [cleanify' $ foldr1 (zipWith union) [existentialList (filterTrump wUset var) wUset var dom | wUset <- wEquivalentSet maxUtrump inds env var dom] | maxUtrump <- maxUtrumps]
+                                             | otherwise =  toList $ fromList $ reduceSubTrumps $ cleanify' $  concat [cleanify $ foldr1 (zipWith union) [existentialList (filterTrump wUset var) wUset var dom | wUset <- wEquivalentSet maxUtrump inds env var dom] | maxUtrump <- maxUtrumps]
 
 
 existentialList :: Trump -> Trump -> Var -> Domain -> Trumps
 existentialList xi ui var dom        | xi == [] = [[]]
                                | xi == [[]] = [[[]]]
-                               | otherwise = reduceSubTrumps $ cleanify $ foldr1 (zipWith union) [existentialCanBe xAssign ui var dom | xAssign <- xi]
+                               | otherwise = reduceSubTrumps $ foldr1 (zipWith union) [existentialCanBe xAssign ui var dom | xAssign <- xi]
 
 existentialCanBe :: Deal -> Trump -> Var -> Domain -> Trumps -- assumption only one assignment 
 existentialCanBe xAssign ui var dom = [if (xAssign ++ [(var,d)]) `elem` ui then [xAssign] else [[]] | d <- dom]
